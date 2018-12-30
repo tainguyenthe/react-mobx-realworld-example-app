@@ -13,8 +13,9 @@ import authStore from "./stores/authStore";
 import commonStore from "./stores/commonStore";
 import editorStore from "./stores/editorStore";
 import userStore from "./stores/userStore";
-
 import profileStore from "./stores/profileStore";
+
+import style from '../style/index.scss';
 
 const stores = {
   articlesStore,
