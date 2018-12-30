@@ -1,10 +1,9 @@
-import { observable, action, computed } from 'mobx';
-import agent from '../agent';
+import { observable, action, computed } from "mobx";
+import agent from "../agent";
 
 const LIMIT = 10;
 
 export class ArticlesStore {
-
   @observable isLoading = false;
   @observable page = 0;
   @observable totalPagesCount = 0;
@@ -13,7 +12,7 @@ export class ArticlesStore {
 
   @computed get articles() {
     return this.articlesRegistry.values();
-  };
+  }
 
   clear() {
     this.articlesRegistry.clear();
@@ -36,21 +35,36 @@ export class ArticlesStore {
 
   $req() {
     if (this.predicate.myFeed) return agent.Articles.feed(this.page, LIMIT);
-    if (this.predicate.favoritedBy) return agent.Articles.favoritedBy(this.predicate.favoritedBy, this.page, LIMIT);
-    if (this.predicate.tag) return agent.Articles.byTag(this.predicate.tag, this.page, LIMIT);
-    if (this.predicate.author) return agent.Articles.byAuthor(this.predicate.author, this.page, LIMIT);
+    if (this.predicate.favoritedBy)
+      return agent.Articles.favoritedBy(
+        this.predicate.favoritedBy,
+        this.page,
+        LIMIT
+      );
+    if (this.predicate.tag)
+      return agent.Articles.byTag(this.predicate.tag, this.page, LIMIT);
+    if (this.predicate.author)
+      return agent.Articles.byAuthor(this.predicate.author, this.page, LIMIT);
     return agent.Articles.all(this.page, LIMIT, this.predicate);
   }
 
   @action loadArticles() {
     this.isLoading = true;
     return this.$req()
-      .then(action(({ articles, articlesCount }) => {
-        this.articlesRegistry.clear();
-        articles.forEach(article => this.articlesRegistry.set(article.slug, article));
-        this.totalPagesCount = Math.ceil(articlesCount / LIMIT);
-      }))
-      .finally(action(() => { this.isLoading = false; }));
+      .then(
+        action(({ articles, articlesCount }) => {
+          this.articlesRegistry.clear();
+          articles.forEach(article =>
+            this.articlesRegistry.set(article.slug, article)
+          );
+          this.totalPagesCount = Math.ceil(articlesCount / LIMIT);
+        })
+      )
+      .finally(
+        action(() => {
+          this.isLoading = false;
+        })
+      );
   }
 
   @action loadArticle(slug, { acceptCached = false } = {}) {
@@ -60,11 +74,17 @@ export class ArticlesStore {
     }
     this.isLoading = true;
     return agent.Articles.get(slug)
-      .then(action(({ article }) => {
-        this.articlesRegistry.set(article.slug, article);
-        return article;
-      }))
-      .finally(action(() => { this.isLoading = false; }));
+      .then(
+        action(({ article }) => {
+          this.articlesRegistry.set(article.slug, article);
+          return article;
+        })
+      )
+      .finally(
+        action(() => {
+          this.isLoading = false;
+        })
+      );
   }
 
   @action makeFavorite(slug) {
@@ -72,12 +92,13 @@ export class ArticlesStore {
     if (article && !article.favorited) {
       article.favorited = true;
       article.favoritesCount++;
-      return agent.Articles.favorite(slug)
-        .catch(action(err => {
+      return agent.Articles.favorite(slug).catch(
+        action(err => {
           article.favorited = false;
           article.favoritesCount--;
           throw err;
-        }));
+        })
+      );
     }
     return Promise.resolve();
   }
@@ -87,36 +108,39 @@ export class ArticlesStore {
     if (article && article.favorited) {
       article.favorited = false;
       article.favoritesCount--;
-      return agent.Articles.unfavorite(slug)
-        .catch(action(err => {
+      return agent.Articles.unfavorite(slug).catch(
+        action(err => {
           article.favorited = true;
           article.favoritesCount++;
           throw err;
-        }));
+        })
+      );
     }
     return Promise.resolve();
   }
 
   @action createArticle(article) {
-    return agent.Articles.create(article)
-      .then(({ article }) => {
-        this.articlesRegistry.set(article.slug, article);
-        return article;
-      })
+    return agent.Articles.create(article).then(({ article }) => {
+      this.articlesRegistry.set(article.slug, article);
+      return article;
+    });
   }
 
   @action updateArticle(data) {
-    return agent.Articles.update(data)
-      .then(({ article }) => {
-        this.articlesRegistry.set(article.slug, article);
-        return article;
-      })
+    return agent.Articles.update(data).then(({ article }) => {
+      this.articlesRegistry.set(article.slug, article);
+      return article;
+    });
   }
 
   @action deleteArticle(slug) {
     this.articlesRegistry.delete(slug);
-    return agent.Articles.del(slug)
-      .catch(action(err => { this.loadArticles(); throw err; }));
+    return agent.Articles.del(slug).catch(
+      action(err => {
+        this.loadArticles();
+        throw err;
+      })
+    );
   }
 }
 
