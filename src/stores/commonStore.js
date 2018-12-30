@@ -2,7 +2,7 @@ import { observable, action, reaction } from "mobx";
 import agent from "../agent";
 
 class CommonStore {
-  @observable appName = "Conduit";
+  @observable appName = "Smart Health";
   @observable token = window.localStorage.getItem("jwt");
   @observable appLoaded = false;
 

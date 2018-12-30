@@ -1,16 +1,16 @@
-import { observable, action } from 'mobx';
-import agent from '../agent';
-import userStore from './userStore';
-import commonStore from './commonStore';
+import { observable, action } from "mobx";
+import agent from "../agent";
+import userStore from "./userStore";
+import commonStore from "./commonStore";
 
 class AuthStore {
   @observable inProgress = false;
   @observable errors = undefined;
 
   @observable values = {
-    username: '',
-    email: '',
-    password: '',
+    username: "",
+    email: "",
+    password: ""
   };
 
   @action setUsername(username) {
@@ -26,9 +26,9 @@ class AuthStore {
   }
 
   @action reset() {
-    this.values.username = '';
-    this.values.email = '';
-    this.values.password = '';
+    this.values.username = "";
+    this.values.email = "";
+    this.values.password = "";
   }
 
   @action login() {
@@ -37,24 +37,42 @@ class AuthStore {
     return agent.Auth.login(this.values.email, this.values.password)
       .then(({ user }) => commonStore.setToken(user.token))
       .then(() => userStore.pullUser())
-      .catch(action((err) => {
-        this.errors = err.response && err.response.body && err.response.body.errors;
-        throw err;
-      }))
-      .finally(action(() => { this.inProgress = false; }));
+      .catch(
+        action(err => {
+          this.errors =
+            err.response && err.response.body && err.response.body.errors;
+          throw err;
+        })
+      )
+      .finally(
+        action(() => {
+          this.inProgress = false;
+        })
+      );
   }
 
   @action register() {
     this.inProgress = true;
     this.errors = undefined;
-    return agent.Auth.register(this.values.username, this.values.email, this.values.password)
+    return agent.Auth.register(
+      this.values.username,
+      this.values.email,
+      this.values.password
+    )
       .then(({ user }) => commonStore.setToken(user.token))
       .then(() => userStore.pullUser())
-      .catch(action((err) => {
-        this.errors = err.response && err.response.body && err.response.body.errors;
-        throw err;
-      }))
-      .finally(action(() => { this.inProgress = false; }));
+      .catch(
+        action(err => {
+          this.errors =
+            err.response && err.response.body && err.response.body.errors;
+          throw err;
+        })
+      )
+      .finally(
+        action(() => {
+          this.inProgress = false;
+        })
+      );
   }
 
   @action logout() {
