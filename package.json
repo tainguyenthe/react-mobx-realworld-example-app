@@ -13,6 +13,7 @@
         "custom-react-scripts": "0.2.0",
         "extract-text-webpack-plugin": "^3.0.2",
         "gh-pages": "^1.0.0",
+        "node-sass": "^4.11.0",
         "react-hot-loader": "^4.6.3",
         "sass-loader": "^7.1.0",
         "style-loader": "^0.23.1",
@@ -40,7 +41,7 @@
         "eject": "react-scripts eject",
         "predeploy": "npm run build",
         "deploy": "gh-pages -d build",
-        "build": "webpack --config webpack.config.js --progress --display-modules --colors --display-error-details --sort-modules-by size",
-        "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --progress --colors --inline"
+        "start": "react-scripts start",
+        "build": "react-scripts build"
     }
 }
