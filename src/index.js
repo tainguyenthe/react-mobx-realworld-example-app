@@ -15,7 +15,7 @@ import editorStore from "./stores/editorStore";
 import userStore from "./stores/userStore";
 import profileStore from "./stores/profileStore";
 
-import './style/index.scss';
+// import './style/index.scss';
 
 const stores = {
   articlesStore,

@@ -47,9 +47,7 @@
         "eject": "react-scripts eject",
         "predeploy": "npm run build",
         "deploy": "gh-pages -d build",
-        "start:dev": "webpack-dev-server --config ./webpack.dev.config.js  --progress --colors",
-        "build:dev": "webpack --config ./webpack.dev.config.js --progress --colors",
-        "start": "webpack-dev-server --progress --colors --hot --inline",
-        "build": "webpack -p --config ./webpack.prod.config.js --progress --colors"
+        "start": "react-scripts start",
+        "build": "react-scripts build"
     }
 }
